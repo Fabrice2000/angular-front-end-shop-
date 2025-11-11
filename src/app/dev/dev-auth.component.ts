@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 interface TokenResponse {
   access: string;
@@ -12,9 +13,16 @@ interface RefreshResponse {
 @Component({
   standalone: true,
   selector: 'app-dev-auth',
-  imports: [JsonPipe],
+  imports: [JsonPipe, RouterLink],
   template: `
     <section class="mx-auto max-w-3xl px-4 py-10">
+      <nav class="mb-4 flex gap-3 text-sm">
+        <button type="button" routerLink="/dev" class="text-blue-600 hover:underline">
+          ← Dev index
+        </button>
+        <button type="button" routerLink="/" class="text-blue-600 hover:underline">Accueil</button>
+      </nav>
+
       <h2 class="text-2xl font-semibold">/api/auth/token/ & /api/auth/token/refresh/</h2>
       <div class="mt-4 flex gap-3">
         <button
@@ -62,7 +70,8 @@ export class DevAuthComponent {
       this.err.set(`${res.status} ${res.statusText}`);
       return;
     }
-    this.loginResp.set((await res.json()) as TokenResponse);
+    const data = (await res.json()) as TokenResponse;
+    this.loginResp.set(data);
   }
 
   async refresh(): Promise<void> {
@@ -77,6 +86,7 @@ export class DevAuthComponent {
       this.err.set(`${res.status} ${res.statusText}`);
       return;
     }
-    this.refreshResp.set((await res.json()) as RefreshResponse);
+    const data = (await res.json()) as RefreshResponse;
+    this.refreshResp.set(data);
   }
 }

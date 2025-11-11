@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 interface RatingResponse {
   product_id: number;
@@ -11,9 +12,19 @@ interface RatingResponse {
 @Component({
   standalone: true,
   selector: 'app-dev-product-rating',
-  imports: [JsonPipe, FormsModule],
+  imports: [FormsModule, RouterLink, JsonPipe],
   template: `
     <section class="mx-auto max-w-3xl px-4 py-10">
+      <nav class="mb-4 flex gap-3 text-sm">
+        <button type="button" routerLink="/dev" class="text-blue-600 hover:underline">
+          ← Dev index
+        </button>
+        <button type="button" routerLink="/" class="text-blue-600 hover:underline">Accueil</button>
+        <button type="button" routerLink="/dev/products" class="text-blue-600 hover:underline">
+          Liste produits
+        </button>
+      </nav>
+
       <h2 class="text-2xl font-semibold">GET /api/products/:id/rating/</h2>
 
       <form class="mt-4 flex items-end gap-3" (submit)="$event.preventDefault(); load()">
@@ -56,6 +67,7 @@ export class DevProductRatingComponent {
       this.err.set(`${res.status} ${res.statusText}`);
       return;
     }
-    this.resp.set((await res.json()) as RatingResponse);
+    const data = (await res.json()) as RatingResponse;
+    this.resp.set(data);
   }
 }

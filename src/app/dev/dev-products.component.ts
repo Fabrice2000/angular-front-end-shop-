@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 interface Product {
   id: number;
@@ -18,9 +19,23 @@ interface Paginated<T> {
 @Component({
   standalone: true,
   selector: 'app-dev-products',
-  imports: [JsonPipe, FormsModule],
+  imports: [JsonPipe, FormsModule, RouterLink],
   template: `
     <section class="mx-auto max-w-4xl px-4 py-10">
+      <nav class="mb-4 flex gap-3 text-sm">
+        <button type="button" routerLink="/dev" class="text-blue-600 hover:underline">
+          ← Dev index
+        </button>
+        <button type="button" routerLink="/" class="text-blue-600 hover:underline">Accueil</button>
+        <button
+          type="button"
+          routerLink="/dev/products/1/rating"
+          class="text-blue-600 hover:underline"
+        >
+          Voir rating #1
+        </button>
+      </nav>
+
       <h2 class="text-2xl font-semibold">GET /api/products/</h2>
 
       <form
@@ -108,6 +123,7 @@ export class DevProductsComponent {
       this.err.set(`${res.status} ${res.statusText}`);
       return;
     }
-    this.resp.set((await res.json()) as Paginated<Product>);
+    const data = (await res.json()) as Paginated<Product>;
+    this.resp.set(data);
   }
 }
