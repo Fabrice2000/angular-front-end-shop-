@@ -13,6 +13,15 @@ import { RouterLink } from '@angular/router';
         <button type="button" routerLink="/dev" class="rounded border px-3 py-2 hover:bg-gray-50">
           → Aller à la zone de tests
         </button>
+        <button type="button" routerLink="/login" class="rounded border px-3 py-2 hover:bg-gray-50">
+          → Login
+        </button>
+        <button type="button" routerLink="/shop/products" class="rounded border px-3 py-2 hover:bg-gray-50">
+          → Produits
+        </button>
+        <button type="button" routerLink="/shop/rating" class="rounded border px-3 py-2 hover:bg-gray-50">
+          → Rating
+        </button>
         <button type="button" routerLink="/" class="rounded border px-3 py-2 hover:bg-gray-50">
           ← Retour accueil
         </button>
