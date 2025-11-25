@@ -43,6 +43,14 @@ export const handlers = [
     return HttpResponse.json({ count, next: null, previous: null, results }, { status: 200 });
   }),
 
+  // Product details: GET /api/products/:id/
+  http.get(`${API}/products/:id/`, async ({ params }) => {
+    const id = Number(params['id']);
+    const p = products.find((x) => x.id === id);
+    if (!p) return HttpResponse.json({ detail: 'Not found.' }, { status: 404 });
+    return HttpResponse.json({ ...p, avg_rating: avgRating(p.ratings) }, { status: 200 });
+  }),
+
   // Product rating: GET /api/products/:id/rating/
   http.get(`${API}/products/:id/rating/`, async ({ params }) => {
     const id = Number(params['id']);
@@ -52,5 +60,63 @@ export const handlers = [
       { product_id: id, avg_rating: avgRating(p.ratings), count: p.ratings.length },
       { status: 200 },
     );
+  }),
+
+  // Cart validation: POST /api/cart/validate/
+  http.post(`${API}/cart/validate/`, async ({ request }) => {
+    try {
+      const body = await request.json();
+      const items = (body as any).items || [];
+      
+      let subtotal = 0;
+      for (const item of items) {
+        const product = products.find((p) => p.id === item.product_id);
+        if (product) {
+          subtotal += product.price * item.quantity;
+        }
+      }
+
+      // Apply discount logic (10% if total > 50€)
+      const discount = subtotal > 50 ? subtotal * 0.1 : 0;
+      const total = subtotal - discount;
+
+      return HttpResponse.json(
+        {
+          subtotal: Number(subtotal.toFixed(2)),
+          discount: Number(discount.toFixed(2)),
+          total: Number(total.toFixed(2)),
+          message: discount > 0 ? 'Réduction de 10% appliquée!' : null,
+        },
+        { status: 200 },
+      );
+    } catch (error) {
+      return HttpResponse.json({ detail: 'Invalid request.' }, { status: 400 });
+    }
+  }),
+
+  // Order creation: POST /api/order/
+  http.post(`${API}/order/`, async ({ request }) => {
+    try {
+      const body = await request.json();
+      const orderData = body as any;
+      
+      // Generate order confirmation number
+      const orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      
+      return HttpResponse.json(
+        {
+          order_number: orderNumber,
+          status: 'confirmed',
+          items: orderData.items || [],
+          shipping_address: orderData.shipping_address || {},
+          total: orderData.total || 0,
+          estimated_delivery: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+          message: 'Votre commande a été confirmée avec succès!',
+        },
+        { status: 201 },
+      );
+    } catch (error) {
+      return HttpResponse.json({ detail: 'Invalid order data.' }, { status: 400 });
+    }
   }),
 ];
