@@ -106,7 +106,7 @@ import { CartItemComponent } from './cart-item.component';
                         <span>{{ total.toFixed(2) }} €</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-2">
-                        💡 Ajoutez {{ (50 - total).toFixed(2) }} € pour bénéficier de 10% de réduction
+                        Ajoutez {{ (50 - total).toFixed(2) }} € pour bénéficier de 10% de réduction
                       </p>
                     }
                   }

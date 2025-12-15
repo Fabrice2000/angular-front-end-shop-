@@ -1,6 +1,24 @@
-<header class="p-4 border-b">
-  <strong>My Shop</strong>
-</header>
-<main class="p-4">
-  <router-outlet></router-outlet>
-</main>
+<div class="min-h-screen bg-gray-50">
+  <header class="bg-white shadow-sm border-b">
+    <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a routerLink="/" class="text-2xl font-bold text-blue-600">My Shop</a>
+      <div class="flex gap-4 items-center">
+        <a routerLink="/shop/products" class="text-gray-700 hover:text-blue-600">Produits</a>
+        <a routerLink="/wishlist" class="text-gray-700 hover:text-blue-600">
+           Wishlist
+        </a>
+        <app-cart-badge></app-cart-badge>
+        <a routerLink="/account/profile" class="text-gray-700 hover:text-blue-600">
+          Compte
+        </a>
+        <a routerLink="/login" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Connexion
+        </a>
+      </div>
+    </nav>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <router-outlet></router-outlet>
+  </main>
+  <app-toast-container></app-toast-container>
+</div>

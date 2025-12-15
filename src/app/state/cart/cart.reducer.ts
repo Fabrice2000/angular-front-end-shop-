@@ -12,8 +12,13 @@ export interface CartState {
   totalPrice: number;
   count: number;
   discount: number;
+  shipping: number;
+  taxes: number;
+  grandTotal: number;
+  appliedPromos: string[];
   loading: boolean;
   error: string | null;
+  stockValidationError: string | null;
 }
 
 export const initialState: CartState = {
@@ -21,8 +26,13 @@ export const initialState: CartState = {
   totalPrice: 0,
   count: 0,
   discount: 0,
+  shipping: 0,
+  taxes: 0,
+  grandTotal: 0,
+  appliedPromos: [],
   loading: false,
   error: null,
+  stockValidationError: null,
 };
 
 const calculateTotals = (items: CartItem[]) => {
@@ -108,5 +118,54 @@ export const cartReducer = createReducer(
     ...state,
     loading: false,
     error,
+  })),
+
+  // Promo code handlers
+  on(CartActions.applyPromoCode, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(
+    CartActions.applyPromoCodeSuccess,
+    (state, { itemsTotal, discount, shipping, taxes, grandTotal, appliedPromos }) => ({
+      ...state,
+      totalPrice: itemsTotal,
+      discount,
+      shipping,
+      taxes,
+      grandTotal,
+      appliedPromos,
+      loading: false,
+      error: null,
+    }),
+  ),
+  on(CartActions.applyPromoCodeFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+  on(CartActions.removePromoCode, (state) => ({
+    ...state,
+    discount: 0,
+    appliedPromos: [],
+    grandTotal: state.totalPrice + state.shipping + state.taxes,
+  })),
+
+  // Stock validation handlers
+  on(CartActions.validateStock, (state) => ({
+    ...state,
+    loading: true,
+    stockValidationError: null,
+  })),
+  on(CartActions.validateStockSuccess, (state) => ({
+    ...state,
+    loading: false,
+    stockValidationError: null,
+  })),
+  on(CartActions.validateStockFailure, (state, { error, productName }) => ({
+    ...state,
+    loading: false,
+    stockValidationError: `Stock insuffisant pour ${productName || 'ce produit'}`,
   })),
 );

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Product } from '../../services/shop-api.service';
+import { Product } from '../../../mocks/data';
 
 export const loadProducts = createAction(
   '[Products] Load',
