@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { checkoutCartGuard } from '../guards/checkout-cart.guard';
+import { checkoutAddressGuard } from '../guards/checkout-address.guard';
 
 export const CHECKOUT_ROUTES: Routes = [
   {
@@ -8,6 +10,7 @@ export const CHECKOUT_ROUTES: Routes = [
   },
   {
     path: 'summary',
+    canActivate: [checkoutCartGuard],
     loadComponent: () =>
       import('../shop/checkout/step1-summary.component').then(
         (m) => m.Step1SummaryComponent
@@ -15,6 +18,7 @@ export const CHECKOUT_ROUTES: Routes = [
   },
   {
     path: 'address',
+    canActivate: [checkoutCartGuard],
     loadComponent: () =>
       import('../shop/checkout/step2-address.component').then(
         (m) => m.Step2AddressComponent
@@ -22,6 +26,7 @@ export const CHECKOUT_ROUTES: Routes = [
   },
   {
     path: 'confirm',
+    canActivate: [checkoutCartGuard, checkoutAddressGuard],
     loadComponent: () =>
       import('../shop/checkout/step3-confirm.component').then(
         (m) => m.Step3ConfirmComponent

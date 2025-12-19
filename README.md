@@ -335,24 +335,86 @@ Administrateur :
 
 ---
 
+## Quality & Tests (Exercice 4)
+
+### Tests Unitaires
+
+L'application dispose de tests unitaires couvrant :
+
+- **Reducers** : cart.reducer (add/update/remove items avec recalcul des totaux)
+- **Selectors** : cart.selectors (calcul du total final avec réduction)
+- **Effects** : products.effects et auth.effects (success/failure)
+- **Composants** : ProductCardComponent, LoginFormComponent
+
+Pour exécuter les tests :
+
+```bash
+npm test                    # Mode watch
+npm test -- --watch=false   # Mode single-run (CI)
+```
+
+### Linting
+
+Vérification de la qualité du code avec ESLint :
+
+```bash
+npm run lint
+```
+
+### CI/CD avec GitHub Actions
+
+Workflow CI configuré dans `.github/workflows/ci.yml` :
+
+- Se déclenche automatiquement sur chaque Pull Request vers `main`
+- Exécute : install → lint → tests → build
+- La PR échoue si l'une de ces étapes échoue
+
+### Docker (Optionnel)
+
+Pour lancer l'application via Docker :
+
+```bash
+# Avec Docker
+docker build -t myshop-app .
+docker run -p 4200:4200 myshop-app
+
+# Avec Docker Compose
+docker-compose up
+```
+
+Accès : `http://localhost:4200`
+
+---
+
 ## Scripts Disponibles
 
 ```bash
 npm start              # Démarrer le serveur de développement
 npm run build          # Construire pour la production
 npm test               # Exécuter les tests
+npm run lint           # Vérifier la qualité du code
 ```
 
 ---
 
 ## Exercice 3 - Checklist
 
-- 1. Espace Compte Utilisateur (3 pages + NgRx)
-- 2. Wishlist avec localStorage
-- 3. Système d'Avis (CRUD + rating)
-- 4. Règles Métier (promo, taxes, stock)
-- 5. Dashboard Admin (KPIs + visualisations)
-- 6. Feature Modules & Lazy Loading (6 modules)
-- 7. Optimisations de Performance (8 techniques)
-- 8. Notifications & UX (toasts, skeletons, animations)
-- 9. Documentation README
+- [x] 1. Espace Compte Utilisateur (3 pages + NgRx)
+- [x] 2. Wishlist avec localStorage
+- [x] 3. Système d'Avis (CRUD + rating)
+- [x] 4. Règles Métier (promo, taxes, stock)
+- [x] 5. Dashboard Admin (KPIs + visualisations)
+- [x] 6. Feature Modules & Lazy Loading (6 modules)
+- [x] 7. Optimisations de Performance (8 techniques)
+- [x] 8. Notifications & UX (toasts, skeletons, animations)
+- [x] 9. Documentation README
+
+## Exercice 4 - Checklist
+
+- [x] 1. Améliorations UX Catalogue (debounce, URL sync, skeleton loaders)
+- [x] 2. Checkout guards (panier vide, adresse manquante)
+- [x] 3. Notifications globales (ToastService existant)
+- [x] 4. Tests unitaires (reducers, selectors, effects, composants)
+- [x] 5. GitHub Actions CI (lint + tests + build sur PR)
+- [x] 6. Docker et docker-compose (optionnel)
+- [x] 7. README mis à jour avec section Quality

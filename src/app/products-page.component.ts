@@ -8,6 +8,9 @@ import { ProductsListComponent } from './components/products-list.component';
 import * as ProductsActions from './state/products/products.actions';
 import { selectProductsWithRatings, selectProductsLoading } from './state/products/products.selectors';
 import { products as mockProducts } from '../mocks/data';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -163,6 +166,9 @@ import { products as mockProducts } from '../mocks/data';
 })
 export class ProductsPageComponent implements OnInit {
   private store = inject(Store);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private filterChanges$ = new Subject<void>();
   
   // Signals pour les filtres
   searchTerm = signal('');
@@ -231,15 +237,35 @@ export class ProductsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // Les produits mockés sont déjà affichés, pas besoin de charger depuis le store
+    // Restaurer l'état des filtres depuis les query params
+    const params = this.route.snapshot.queryParams;
+    if (params['q']) { this.searchTerm.set(params['q']); }
+    if (params['cat']) { this.selectedCategory.set(params['cat']); }
+    if (params['maxPrice']) { this.maxPrice.set(Number(params['maxPrice'])); }
+    if (params['minRating']) { this.minRating.set(Number(params['minRating'])); }
+    if (params['inStock']) { this.showInStockOnly.set(params['inStock'] === '1'); }
+    if (params['lowStock']) { this.showLowStockOnly.set(params['lowStock'] === '1'); }
+
+    // Debounce des modifications de filtres et synchronisation URL
+    this.filterChanges$.pipe(debounceTime(350)).subscribe(() => {
+      const qp: any = {};
+      if (this.searchTerm()) qp.q = this.searchTerm();
+      if (this.selectedCategory()) qp.cat = this.selectedCategory();
+      if (this.maxPrice() !== undefined) qp.maxPrice = String(this.maxPrice());
+      if (this.minRating() > 0) qp.minRating = String(this.minRating());
+      if (this.showInStockOnly()) qp.inStock = '1';
+      if (this.showLowStockOnly()) qp.lowStock = '1';
+
+      this.router.navigate([], { relativeTo: this.route, queryParams: qp, replaceUrl: true });
+    });
   }
   
   onSearchChange(): void {
-    // Trigger reactivity
+    this.filterChanges$.next();
   }
   
   onFilterChange(): void {
-    // Trigger reactivity
+    this.filterChanges$.next();
   }
   
   resetFilters(): void {

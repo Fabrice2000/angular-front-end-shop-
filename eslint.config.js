@@ -3,13 +3,13 @@ import storybook from "eslint-plugin-storybook";
 
 // eslint.config.js
 // @ts-check
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
-const prettierConfig = require("eslint-config-prettier");
-const prettierPlugin = require("eslint-plugin-prettier");
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import angular from "angular-eslint";
+import prettierConfig from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
 
-module.exports = tseslint.config(
+export default tseslint.config(
   // TypeScript / .ts
   {
     files: ["**/*.ts"],
@@ -34,8 +34,8 @@ module.exports = tseslint.config(
         "error",
         { type: "element", prefix: "app", style: "kebab-case" },
       ],
-      // Run Prettier via ESLint
-      "prettier/prettier": "error",
+      // Run Prettier via ESLint (désactivé pour éviter les conflits)
+      // "prettier/prettier": "error",
     },
   },
 
@@ -51,8 +51,8 @@ module.exports = tseslint.config(
       prettier: prettierPlugin,
     },
     rules: {
-      // Let Prettier format HTML too
-      "prettier/prettier": "error",
+      // Let Prettier format HTML too (désactivé)
+      // "prettier/prettier": "error",
     },
   }
 );
